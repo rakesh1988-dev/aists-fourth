@@ -66,18 +66,19 @@ const symbolSchema = new mongoose.Schema({
 });
 const Symbol = mongoose.model('symbol', symbolSchema);
 const calldata = async () => {
-  const result = await Symbol.find().skip(90).limit(35)
-  result.forEach(async(item, index) => {
+  const result = await Symbol.find().skip(30).limit(10)
+  await result.forEach(async(item, index) => {
     const symbol = item['Symbol']
     await scrapeWithCheerio(symbol)
-    if (index == 34) {
-     bulkWrite()
-    }
   })
+  await bulkWrite()
 }
 
 function isWithinTimeRange() {
-    const now = new Date();
+    const temp = new Date().toLocaleString("en-IN", {
+  timeZone: "Asia/Kolkata"
+});
+const now = new Date(temp)
     const hours = now.getHours();
     const minutes = now.getMinutes();
     return (hours == 9 && minutes >= 15) || (hours == 10 && minutes <=25);
